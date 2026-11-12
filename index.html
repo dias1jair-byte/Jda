@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#176b3a">
+<title>JDA REPAROS — Vistorias</title>
+<style>
+:root{--green:#176b3a;--dark:#173126;--bg:#f3f6f4;--line:#d9e2dc}
+*{box-sizing:border-box}body{margin:0;font:16px Arial,sans-serif;background:var(--bg);color:#17221b}
+header{background:var(--green);color:white;padding:18px 16px}header h1{font-size:21px;margin:0}header p{margin:5px 0 0;font-size:13px}
+main{max-width:760px;margin:auto;padding:14px}.card{background:white;border:1px solid var(--line);border-radius:12px;padding:14px;margin:0 0 13px;box-shadow:0 2px 8px #1731260b}
+h2{font-size:18px;margin:0 0 12px;color:var(--dark)}h3{font-size:16px;margin:15px 0 8px}
+label{display:block;font-size:13px;font-weight:bold;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #bdcbc1;border-radius:8px;font-size:16px;background:white}
+textarea{min-height:75px;resize:vertical}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+button{border:0;border-radius:8px;padding:12px 14px;font-size:15px;font-weight:bold;background:var(--green);color:white;margin:5px 4px 3px 0}
+button.secondary{background:#e8f0eb;color:var(--dark);border:1px solid var(--line)}
+button.whatsapp{background:#168b4b;color:white}
+button.danger{background:#a63232}.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:12px}.tabs button{white-space:nowrap}
+.item{border:1px solid var(--line);padding:10px;border-radius:9px;margin:8px 0}
+.itemtop{display:flex;align-items:center;justify-content:space-between;gap:8px}.itemtop strong{font-size:14px}
+small,.muted{color:#5c6b61;font-size:12px}.photo{width:100%;max-height:210px;object-fit:contain;margin-top:8px;border-radius:8px;background:#eee}
+.status{display:inline-block;padding:4px 8px;border-radius:20px;background:#e8f0eb;font-size:12px}
+.actions{display:flex;flex-wrap:wrap;gap:5px}.hidden{display:none}
+@media(max-width:480px){.grid{grid-template-columns:1fr}main{padding:10px}}
+#printArea{display:none}
+#sharePanel{display:none;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:9px;background:#f7faf8}
+#sharePanel.show{display:block}
+@page{size:A4;margin:14mm}
+@media print{body{background:white;color:#17221b}body>*:not(#printArea){display:none!important}#printArea{display:block!important;font:12px Arial,sans-serif;padding:18px;color:#17221b}#printArea .report-head{border-bottom:3px solid #176b3a;padding-bottom:12px;margin-bottom:16px}#printArea h1{font-size:22px;color:#176b3a;margin:0 0 5px}#printArea h2{font-size:16px;color:#173126;margin:18px 0 8px}#printArea .ref{font-size:13px;font-weight:bold;background:#e8f0eb;padding:8px;border-radius:5px;display:inline-block;margin-top:8px}#printArea .meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}#printArea .meta div{border:1px solid #d9e2dc;padding:7px;border-radius:4px}#printArea .report-item{border:1px solid #d9e2dc;padding:9px;margin:8px 0;break-inside:avoid;page-break-inside:avoid}#printArea .report-item img{max-width:100%;max-height:260px;object-fit:contain;display:block;margin-top:8px}#printArea .signatures{display:grid;grid-template-columns:1fr 1fr;gap:35px;margin-top:55px}#printArea .signatures div{border-top:1px solid #333;text-align:center;padding-top:6px}}
+</style></head>
+<body>
+<header><h1>🖌 JDA REPAROS — Vistorias</h1><p>Aplicativo básico • funciona offline • dados salvos neste aparelho</p></header>
+<main>
+<div class="tabs noprint">
+<button onclick="show('cadastro')">Imóvel</button><button onclick="show('vistoria')">Vistoria</button><button onclick="show('historico')">Registros</button>
+</div>
+<section id="cadastro" class="page">
+<div class="card"><div class="grid"><div><h2>Cadastro do imóvel</h2></div><div style="display:flex;justify-content:flex-end;align-items:center"><button class="secondary" onclick="newProperty()">+ Novo</button></div></div>
+<label>Identificação / nome do imóvel</label><input id="nome" placeholder="Ex.: Apartamento 410">
+<label>Endereço completo</label><input id="endereco" placeholder="Rua, número, complemento, bairro, cidade">
+<div class="grid"><div><label>Proprietário</label><input id="proprietario"></div><div><label>Imobiliária</label><input id="imobiliaria"></div></div>
+<div class="grid"><div><label>Inquilino</label><input id="inquilino"></div><div><label>Tipo de vistoria</label><select id="tipo"><option>Entrada</option><option>Saída</option><option>Conferência</option></select></div></div>
+<label>Data</label><input id="data" type="date">
+<label>Observações gerais</label><textarea id="obsGeral"></textarea>
+<button onclick="saveProperty()">Salvar imóvel / iniciar vistoria</button>
+</div>
+</section>
+<section id="vistoria" class="page hidden">
+<div class="card"><h2>Ambientes e itens</h2><div class="muted" id="currentInfo">Cadastre ou selecione um imóvel primeiro.</div>
+<label>Ambiente</label><select id="ambiente"><option>Sala</option><option>Cozinha</option><option>Quarto 1</option><option>Quarto 2</option><option>Suíte</option><option>Banheiro</option><option>Lavabo</option><option>Lavanderia</option><option>Sacada</option><option>Garagem</option><option>Área externa</option><option>Outro</option></select>
+<label>Elemento vistoriado</label><select id="elemento"><option>Paredes / pintura</option><option>Teto</option><option>Piso / revestimento</option><option>Rodapés</option><option>Portas / fechaduras</option><option>Janelas / vidros</option><option>Tomadas / interruptores</option><option>Iluminação</option><option>Instalação hidráulica</option><option>Louças / metais</option><option>Armários / marcenaria</option><option>Limpeza</option><option>Outro</option></select>
+<div class="grid"><div><label>Condição</label><select id="condicao"><option>Bom</option><option>Regular</option><option>Ruim</option><option>Não verificado</option><option>Não se aplica</option></select></div><div><label>Pendência?</label><select id="pendencia"><option>Não</option><option>Sim</option></select></div></div>
+<label>Descrição / observação</label><textarea id="descricao" placeholder="Descreva o estado, defeito ou serviço necessário"></textarea>
+<label>Fotografia (pode usar a câmera)</label><input id="foto" type="file" accept="image/*" capture="environment">
+<button onclick="addItem()">Adicionar item à vistoria</button>
+<button class="secondary" onclick="finalizeEnvironment()">Finalizar ambiente e ir para o próximo</button>
+<p class="muted" id="progressInfo">Adicione todos os itens deste ambiente. Só depois toque em “Finalizar ambiente”.</p>
+</div>
+<div class="card"><h2>Itens registrados</h2><div id="items"></div>
+<button class="whatsapp" onclick="finalizeInspection()">Finalizar e salvar vistoria</button>
+</div>
+</section>
+<section id="historico" class="page hidden">
+<div class="card"><h2>Registros salvos neste aparelho</h2><div id="records"></div>
+<div class="actions noprint"><button class="secondary" onclick="exportData()">Baixar backup</button><button class="whatsapp" onclick="shareBackup()">Enviar backup</button><label style="margin:8px 0">Importar backup <input type="file" accept="application/json" onchange="importData(event)"></label></div>
+</div>
+</section>
+<div class="card noprint"><h2>Relatório e segurança</h2><p class="muted">Gere um relatório usando a opção imprimir do celular (selecione “Salvar como PDF”). Exporte backups regularmente para não perder os registros se trocar ou limpar o aparelho.</p><div class="actions"><button onclick="printReport()">Imprimir / salvar PDF</button><button class="whatsapp" onclick="shareActiveRecord()">Enviar vistoria pelo WhatsApp</button><button class="secondary" onclick="exportData()">Fazer backup</button><button class="secondary" onclick="shareBackup()">Compartilhar backup</button></div></div>
+</main>
+<input id="pdfToSend" type="file" accept="application/pdf,.pdf" hidden>
+<div id="sharePanel" class="noprint">
+ <strong id="shareFileName">PDF selecionado</strong>
+ <p class="muted">Toque no botão abaixo para abrir o compartilhamento do Android. Selecione WhatsApp e depois o contato.</p>
+ <button id="sharePdfButton" class="whatsapp" onclick="shareSelectedPdf()">Compartilhar PDF + texto</button>
+ <button class="secondary" onclick="openWhatsAppTextOnly()">Abrir WhatsApp com texto</button>
+ <button class="secondary" onclick="cancelPdfShare()">Cancelar</button>
+</div>
+<div id="printArea"></div>
+<script>
+const KEY='jda_vistorias_offline_v1';let db=JSON.parse(localStorage.getItem(KEY)||'{"records":[],"active":null}');
+function makeRef(){let d=new Date(),date=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');let n=1;while(db.records.some(x=>x.ref==='JDA-'+date+'-'+String(n).padStart(4,'0')))n++;return 'JDA-'+date+'-'+String(n).padStart(4,'0')}
+db.records.forEach(r=>{if(!r.ref)r.ref=makeRef();if(!Array.isArray(r.items))r.items=[]});
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(db));return true}catch(e){alert('O armazenamento do celular ficou cheio. Exporte um backup e reduza o tamanho ou a quantidade de fotos antes de continuar.');return false}}
+function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');render();}
+function active(){return db.records.find(r=>r.id===db.active)}
+function newProperty(){
+ db.active=null;
+ ['nome','endereco','proprietario','imobiliaria','inquilino','data','obsGeral'].forEach(id=>document.getElementById(id).value='');
+ document.getElementById('tipo').value='Entrada';
+ document.getElementById('ambiente').value='Sala';
+ document.getElementById('progressInfo').textContent='Novo imóvel. Cadastre os dados e salve para iniciar uma nova vistoria.';
+ document.getElementById('currentInfo').textContent='Novo imóvel: preencha os dados do cadastro.';
+ document.getElementById('descricao').value='';
+ document.getElementById('foto').value='';
+ render();
+}
+function saveProperty(){
+let r=active();if(!r){r={id:Date.now(),ref:makeRef(),items:[],created:new Date().toISOString()};db.records.unshift(r)}
+Object.assign(r,{nome:v('nome'),endereco:v('endereco'),proprietario:v('proprietario'),imobiliaria:v('imobiliaria'),inquilino:v('inquilino'),tipo:v('tipo'),data:v('data'),obsGeral:v('obsGeral')});
+if(!r.nome&&!r.endereco){alert('Informe ao menos o nome ou endereço do imóvel.');return}
+db.active=r.id;persist();alert('Imóvel salvo. Você já pode registrar os ambientes.');show('vistoria');
+}
+function v(id){return document.getElementById(id).value}
+const AMBIENTES_ORDEM=['Sala','Cozinha','Quarto 1','Quarto 2','Suíte','Banheiro','Lavabo','Lavanderia','Sacada','Garagem','Área externa','Outro'];
+function avancarAmbiente(ambienteAtual){
+ const sel=document.getElementById('ambiente');
+ const atual=AMBIENTES_ORDEM.indexOf(ambienteAtual);
+ if(atual>=0 && atual<AMBIENTES_ORDEM.length-1){
+   sel.value=AMBIENTES_ORDEM[atual+1];
+   document.getElementById('progressInfo').textContent='Ambiente atual: '+sel.value+'. Adicione todos os itens e depois finalize este ambiente.';
+ }else{
+   document.getElementById('progressInfo').textContent='Todos os ambientes da sequência foram percorridos. Confira os itens e finalize a vistoria.';
+   alert('Último ambiente da sequência concluído. Agora você pode finalizar e salvar a vistoria.');
+ }
+}
+function finalizeEnvironment(){
+ const atual=v('ambiente');
+ const r=active();
+ if(!r){alert('Salve um imóvel primeiro.');return}
+ const temItens=(r.items||[]).some(x=>x.ambiente===atual);
+ if(!temItens && !confirm('Ainda não há itens cadastrados neste ambiente. Deseja avançar mesmo assim?'))return;
+ avancarAmbiente(atual);
+}
+function addItem(){
+let r=active();if(!r){alert('Salve um imóvel primeiro.');show('cadastro');return}
+let ambienteAtual=v('ambiente');
+let file=document.getElementById('foto').files[0];
+const save=photo=>{
+ r.items.push({id:Date.now(),ambiente:ambienteAtual,elemento:v('elemento'),condicao:v('condicao'),pendencia:v('pendencia'),descricao:v('descricao'),foto:photo||''});
+ if(!persist())return;
+ document.getElementById('descricao').value='';
+ document.getElementById('foto').value='';
+ document.getElementById('progressInfo').textContent='Item adicionado em '+ambienteAtual+'. Você pode adicionar outros itens neste mesmo ambiente ou finalizar o ambiente.';
+ render();
+};
+if(file){let rd=new FileReader();rd.onload=()=>{let im=new Image();im.onload=()=>{let c=document.createElement('canvas'),scale=Math.min(1,1200/im.width);c.width=im.width*scale;c.height=im.height*scale;c.getContext('2d').drawImage(im,0,0,c.width,c.height);save(c.toDataURL('image/jpeg',.68));};im.src=rd.result;};rd.readAsDataURL(file)}else save('');
+}
+function finalizeInspection(){
+ const r=active();
+ if(!r){alert('Não há vistoria selecionada.');return}
+ if(!r.items||!r.items.length){alert('Adicione pelo menos um item antes de finalizar.');return}
+ if(!confirm('Finalizar e salvar esta vistoria? Você poderá abrir o registro depois pelo histórico.'))return;
+ r.finalizada=true;
+ r.finalizadaEm=new Date().toISOString();
+ if(!persist())return;
+ alert('Vistoria finalizada e salva neste aparelho!');
+ show('historico');
+}
+function delItem(id){let r=active();if(r&&confirm('Excluir este item?')){r.items=r.items.filter(x=>x.id!==id);persist();render()}}
+function selectRecord(id){db.active=id;persist();let r=active();['nome','endereco','proprietario','imobiliaria','inquilino','tipo','data','obsGeral'].forEach(k=>document.getElementById(k).value=r[k]||'');let prox=AMBIENTES_ORDEM.find(a=>!(r.items||[]).some(x=>x.ambiente===a));document.getElementById('ambiente').value=prox||'Sala';document.getElementById('progressInfo').textContent='Vistoria aberta. Adicione os itens do ambiente atual e toque em “Finalizar ambiente” para avançar.';show('vistoria')}
+function render(){
+let r=active();document.getElementById('currentInfo').textContent=r?`${r.nome||'Imóvel'} • ${r.endereco||''} • ${r.tipo||''} • ${r.data||''}`:'Cadastre ou selecione um imóvel primeiro.';
+document.getElementById('items').innerHTML=r&&r.items.length?r.items.map(x=>`<div class="item"><div class="itemtop"><strong>${esc(x.ambiente)} — ${esc(x.elemento)}</strong><span class="status">${esc(x.condicao)}</span></div><p>${esc(x.descricao||'Sem observações')}</p><small>Pendência: ${esc(x.pendencia)}</small>${x.foto?`<img class="photo" src="${x.foto}">`:''}<div class="noprint"><button class="danger" onclick="delItem(${x.id})">Excluir item</button></div></div>`).join(''):'<p class="muted">Nenhum item registrado nesta vistoria.</p>';
+document.getElementById('records').innerHTML=db.records.length?db.records.map(x=>`<div class="item"><strong>${esc(x.nome||'Imóvel sem nome')}</strong><p class="muted">${esc(x.ref||'')} • ${esc(x.endereco||'')} • ${esc(x.tipo||'')} • ${x.items.length} item(ns)</p><button onclick="selectRecord(${x.id})">Abrir</button><button onclick="printReport(${x.id})">Gerar PDF</button><button class="whatsapp" onclick="shareRecord(${x.id})">WhatsApp</button><button class="danger" onclick="deleteRecord(${x.id})">Excluir</button></div>`).join(''):'<p class="muted">Ainda não há registros.</p>';
+}
+function deleteRecord(id){if(confirm('Excluir permanentemente esta vistoria?')){db.records=db.records.filter(x=>x.id!==id);if(db.active===id)db.active=null;persist();render()}}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function printReport(id){
+ let r=id?db.records.find(x=>x.id===id):active();
+ if(!r){alert('Abra ou selecione uma vistoria primeiro.');return}
+ if(!r.ref){r.ref=makeRef();persist()}
+ const items=(r.items||[]).map((x,i)=>`<div class="report-item"><strong>${esc(x.ambiente)} — ${esc(x.elemento)}</strong><p><b>Condição:</b> ${esc(x.condicao)} &nbsp; <b>Pendência:</b> ${esc(x.pendencia)}</p><p>${esc(x.descricao||'Sem observações')}</p>${x.foto?`<img src="${x.foto}" alt="Foto do item ${i+1}">`:''}</div>`).join('')||'<p>Nenhum item registrado.</p>';
+ document.getElementById('printArea').innerHTML=`<div class="report-head"><h1>JDA REPAROS — VISTORIA DE IMÓVEL</h1><div>Relatório de vistoria</div><div class="ref">CÓDIGO DE REFERÊNCIA: ${esc(r.ref)}</div></div><div class="meta"><div><b>Imóvel:</b><br>${esc(r.nome||'Não informado')}</div><div><b>Endereço:</b><br>${esc(r.endereco||'Não informado')}</div><div><b>Tipo de vistoria:</b><br>${esc(r.tipo||'')}</div><div><b>Data:</b><br>${esc(r.data||'')}</div><div><b>Proprietário:</b><br>${esc(r.proprietario||'Não informado')}</div><div><b>Imobiliária:</b><br>${esc(r.imobiliaria||'Não informado')}</div><div><b>Inquilino:</b><br>${esc(r.inquilino||'Não informado')}</div><div><b>Total de itens:</b><br>${(r.items||[]).length}</div></div><h2>AMBIENTES E ITENS VISTORIADOS</h2>${items}${r.obsGeral?`<h2>OBSERVAÇÕES GERAIS</h2><p>${esc(r.obsGeral)}</p>`:''}<div class="signatures"><div>Responsável pela vistoria — JDA REPAROS</div><div>Responsável / acompanhante do imóvel</div></div><p style="margin-top:22px;font-size:10px;color:#58665d">Código para consulta e identificação: ${esc(r.ref)}</p>`;
+ window.print();
+}
+function backupBlob(){return new Blob([JSON.stringify(db,null,2)],{type:'application/json'})}
+function exportData(){let url=URL.createObjectURL(backupBlob()),a=document.createElement('a');a.href=url;a.download='backup-jda-vistorias.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
+function reportText(r){let lines=['JDA REPAROS — RELATÓRIO DE VISTORIA','Código de referência: '+(r.ref||''),'Imóvel: '+(r.nome||'Não informado'),'Endereço: '+(r.endereco||'Não informado'),'Tipo: '+(r.tipo||''),'Data: '+(r.data||''),'Proprietário: '+(r.proprietario||''),'Imobiliária: '+(r.imobiliaria||''),'Inquilino: '+(r.inquilino||''),'','ITENS VISTORIADOS'];(r.items||[]).forEach((x,i)=>{lines.push((i+1)+'. '+x.ambiente+' — '+x.elemento,'Condição: '+x.condicao+' | Pendência: '+x.pendencia,'Descrição: '+(x.descricao||'Sem observações'))});if(r.obsGeral)lines.push('','Observações gerais: '+r.obsGeral);lines.push('','Enviado pelo aplicativo JDA Vistorias.');return lines.join('\n')}
+let pendingShareRecordId=null;
+let selectedPdfFile=null;
+async function shareRecord(id){
+ const r=db.records.find(x=>x.id===id);if(!r)return;
+ pendingShareRecordId=id;
+ const picker=document.getElementById('pdfToSend');
+ picker.value='';
+ picker.onchange=()=>{
+  const file=picker.files&&picker.files[0];
+  if(!file)return;
+  if(file.type!=='application/pdf'&&!file.name.toLowerCase().endsWith('.pdf')){
+   alert('Selecione um arquivo PDF.');return;
+  }
+  selectedPdfFile=file;
+  document.getElementById('shareFileName').textContent='PDF selecionado: '+file.name;
+  document.getElementById('sharePanel').classList.add('show');
+  document.getElementById('sharePanel').scrollIntoView({behavior:'smooth',block:'center'});
+ };
+ picker.click();
+}
+function shareMessageFor(r){
+ return reportText(r)+'\n\nSegue em anexo o PDF completo da vistoria. Referência: '+(r.ref||'');
+}
+async function shareSelectedPdf(){
+ const r=db.records.find(x=>x.id===pendingShareRecordId);
+ const file=selectedPdfFile;
+ if(!r||!file){alert('Selecione primeiro o PDF da vistoria.');return}
+ const title='Vistoria JDA - '+(r.nome||'Imóvel');
+ const textMessage=shareMessageFor(r);
+ if(window.AndroidBridge){
+  const reader=new FileReader();
+  reader.onload=()=>{const base64=String(reader.result).split(',')[1]||'';AndroidBridge.sharePdf(base64,file.name,textMessage,title)};
+  reader.onerror=()=>alert('Não foi possível ler o PDF selecionado.');
+  reader.readAsDataURL(file);
+  return;
+ }
+ if(!navigator.share){
+  alert('Este navegador não oferece compartilhamento de arquivos. Use “Abrir WhatsApp com texto” e anexe o PDF manualmente.');
+  return;
+ }
+ try{
+  if(navigator.canShare&&!navigator.canShare({files:[file]})){
+   alert('O Android/navegador não aceitou este PDF para compartilhamento direto. Use “Abrir WhatsApp com texto” e anexe o PDF manualmente.');
+   return;
+  }
+  // Este compartilhamento ocorre após um toque explícito no botão, preservando a ativação exigida pelo Android.
+  await navigator.share({title,text:textMessage,files:[file]});
+  document.getElementById('sharePanel').classList.remove('show');
+  selectedPdfFile=null;pendingShareRecordId=null;
+ }catch(e){
+  if(e&&e.name==='AbortError')return;
+  alert('O Android não conseguiu anexar o PDF automaticamente. O arquivo continua selecionado. Toque em “Abrir WhatsApp com texto” e anexe o PDF na conversa.');
+ }
+}
+function openWhatsAppTextOnly(){
+ const r=db.records.find(x=>x.id===pendingShareRecordId);if(!r)return;
+ const url='https://wa.me/?text='+encodeURIComponent(shareMessageFor(r));
+ window.location.href=url;
+}
+function cancelPdfShare(){
+ selectedPdfFile=null;pendingShareRecordId=null;
+ document.getElementById('pdfToSend').value='';
+ document.getElementById('sharePanel').classList.remove('show');
+}
+function shareActiveRecord(){const r=active();if(!r){alert('Abra uma vistoria primeiro.');return}shareRecord(r.id)}
+async function shareBackup(){if(window.AndroidBridge){AndroidBridge.shareBackup(JSON.stringify(db));return}let file=new File([backupBlob()],'backup-jda-vistorias.json',{type:'application/json'});try{if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){await navigator.share({title:'Backup JDA Vistorias',text:'Cópia de segurança das vistorias JDA.',files:[file]})}else{exportData();alert('O celular baixou o backup. Abra o WhatsApp e anexe o arquivo backup-jda-vistorias.json.')}}catch(e){if(e.name!=='AbortError'){exportData();alert('Backup baixado. Você pode anexá-lo no WhatsApp.')}}}
+function importData(e){let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=()=>{try{let x=JSON.parse(rd.result);if(!Array.isArray(x.records))throw 0;if(confirm('Importar backup? Os registros atuais serão substituídos.')){db=x;persist();render();alert('Backup importado.')}}catch{alert('Arquivo de backup inválido.')}};rd.readAsText(f)}
+document.getElementById('data').value=new Date().toISOString().slice(0,10);render();if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(()=>{});}
+</script></body></html>
